@@ -57,7 +57,9 @@ body {
 .prediction {
   max-width: calc(100vw - 40px);
   width: 400px;
-  display: flex;
   justify-content: space-between;
   padding: 10px 10px 0 10px;
+  text-align: center;
+  font-size: larger;
+  font-weight: bold;
 }

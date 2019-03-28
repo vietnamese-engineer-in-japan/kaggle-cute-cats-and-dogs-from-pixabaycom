@@ -27,14 +27,12 @@ class App extends React.Component {
   };
 
   onImageChange = e => {
-    let image = tf.browser.fromPixels(e.target).resizeNearestNeighbor([192, 192]).expandDims();
+    let image = tf.browser.fromPixels(e.target).resizeBilinear([192, 192]).expandDims().div(255);
     this.state.model.predict(image, {batchSize: 1}).data().then(result => {
-      let prediction = Array.from(result).map((probability, index) => {
-        return {
-          probability: probability,
-          className: index
-        };
-      })[0].probability;
+      let probability = Array.from(result)[0] * 100;
+      let prediction = probability > 50
+        ? ('犬（' + probability.toFixed(2) + '％）')
+        : ('猫（' + (100 - probability).toFixed(2) + '％）');
       this.setState({ prediction: prediction });
     });
   };
@@ -65,8 +63,8 @@ class App extends React.Component {
         ) : (
           <div className="dropzone">Loading model...</div>
         )}
-        <div>
-          {this.state.prediction == null ? '' : this.state.prediction > 0.5 ? '犬' : '猫'}
+        <div className="prediction">
+          {this.state.prediction}
         </div>
       </div>
     );
